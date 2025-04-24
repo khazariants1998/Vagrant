@@ -1,0 +1,33 @@
+# Vagrantfile
+Vagrant.configure("2") do |config|
+
+  # Використання образу Ubuntu Jammy
+  config.vm.box = "ubuntu/jammy64"
+
+  # Налаштування приватної мережі
+  config.vm.network "private_network", ip: "192.168.56.101"
+
+  # Налаштування ресурсів (2 CPU, 4096 MB RAM)
+  config.vm.provider "virtualbox" do |vb|
+    vb.cpus = 2
+    vb.memory = 4096
+  end
+
+  # Інлайн-скрипт для встановлення залежностей
+  install_deps = <<-SHELL
+    sudo apt-get update
+    sudo apt-get install -y openjdk-17-jdk
+  SHELL
+
+  # Виконання shell provisioner
+  config.vm.provision "shell", inline: install_deps
+
+  # Налаштування тригера для Gradle
+  config.trigger.after :up do |trigger|
+  trigger.run = {
+    inline: "cd /vagrant && ./gradlew bootRun"
+  }
+end
+
+end
+

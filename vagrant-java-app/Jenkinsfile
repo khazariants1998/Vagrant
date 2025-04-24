@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    sh '''
+                    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+                    sudo apt install -y nodejs
+                    '''
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    sh 'npm -v' // Виводить версію npm
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    sh 'echo $JENKINS_URL' // Виводить змінну середовища JENKINS_URL
+                }
+            }
+        }
+    }
+}
